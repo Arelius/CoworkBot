@@ -41,12 +41,18 @@ def add_command(cmd, &block)
 end
 
 add_command "tweet" do |m, s|
-  msg = Message.new("arelius@gmail.com", "Posting \"#{s}\"");
+  msg = Message.new(m.from, "Posting \"#{s}\"");
   msg.type=:chat
   client.send(msg);
 
   tc = Twitter::Client.new;
   tc.update(s);
+end
+
+add_command "hi" do |m, s|
+  msg = Message.new(m.from, "Hello, #{m.from}");
+  msg.type=:chat
+  client.send(msg);
 end
 
 client.delete_message_callback("process_message")
