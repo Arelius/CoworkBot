@@ -1,0 +1,6 @@
+Jabber:
+    JID: bot@domain.com
+    Pass: mybotpass
+    Server: talk.google.com
+    Privl:
+        - me@domain.com
