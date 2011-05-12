@@ -3,13 +3,22 @@ require "xmpp4r"
 require "xmpp4r/message"
 require "xmpp4r/roster"
 require "yaml"
+require "twitter"
 include Jabber
 
-Jabber::debug = true
+Jabber::debug = false
 
 def load_config()
   $settings = YAML::load_file("config.yaml")
   $jsettings = $settings["Jabber"];
+  tsettings = $settings["Twitter"];
+
+  Twitter.configure do |c|
+    c.consumer_key = tsettings["consumer_key"]
+    c.consumer_secret = tsettings["consumer_secret"]
+    c.oauth_token = tsettings["oauth_token"]
+    c.oauth_token_secret = tsettings["oauth_secret"]
+  end
 end
 
 load_config();
@@ -32,9 +41,12 @@ def add_command(cmd, &block)
 end
 
 add_command "tweet" do |m, s|
-    msg = Message.new("arelius@gmail.com", "Received #{m.body}");
-    msg.type=:chat
-    client.send(msg);
+  msg = Message.new("arelius@gmail.com", "Posting \"#{s}\"");
+  msg.type=:chat
+  client.send(msg);
+
+  tc = Twitter::Client.new;
+  tc.update(s);
 end
 
 client.delete_message_callback("process_message")
