@@ -2,10 +2,12 @@ require "rubygems"
 require "xmpp4r"
 require "xmpp4r/message"
 require "xmpp4r/roster"
+require "xmpp4r/vcard"
 require "yaml"
 require "twitter"
 include Jabber
 
+require "ruby-debug"
 Jabber::debug = false
 
 def load_config()
@@ -50,7 +52,7 @@ add_command "tweet" do |m, s|
 end
 
 add_command "hi" do |m, s|
-  msg = Message.new(m.from, "Hello, #{m.from}");
+  msg = Message.new(m.from, "Hello!");
   msg.type=:chat
   client.send(msg);
 end
