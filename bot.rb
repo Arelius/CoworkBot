@@ -59,13 +59,25 @@ end
 
 client.delete_message_callback("process_message")
 client.add_message_callback 0, "process_message" do |m|
-  if($jsettings["Privl"].include?(m.from.bare.to_s.downcase))
-    bdy = m.body.to_s;
-    cmd = bdy.split[0].downcase;
-    s = bdy[cmd.length..bdy.length].strip
-    p = $commands[cmd];
-    if(p)
+  begin
+    if($jsettings["Privl"].include?(m.from.bare.to_s.downcase))
+      bdy = m.body.to_s;
+      cmd = bdy.split[0].downcase;
+      s = bdy[cmd.length..bdy.length].strip
+      p = $commands[cmd];
+      if(p)
         p.call(m, s);
+      end
+    end
+
+  rescue Exception => e
+    print "Exception caught #{e}"
+    begin
+      msg = Message.new(m.from, "Error caught handling command!");
+      msg.type=:chat
+      client.send(msg);
+      
+    rescue Exception
     end
   end
 end
